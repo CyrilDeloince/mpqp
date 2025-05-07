@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 from typeguard import typechecked
 
+from mpqp.core.instruction.gates.controlled_custom_gate import CustomControlledGate
+
 if TYPE_CHECKING:
     from mpqp.core.circuit import QCircuit
 
@@ -70,7 +72,9 @@ def _simplify_instruction_to_qasm(
 def _instruction_to_qasm2(instruction: Instruction) -> tuple[str, float]:
     if isinstance(instruction, (Breakpoint, ExpectationMeasure)):
         return "", 0
-    elif isinstance(instruction, CustomGate):
+    elif isinstance(instruction, CustomGate) or isinstance(
+        instruction, CustomControlledGate
+    ):
         qasm_str_gphase = instruction.to_other_language(Language.QASM2)
         if TYPE_CHECKING:
             assert isinstance(qasm_str_gphase, tuple)
@@ -183,6 +187,7 @@ def mpqp_to_qasm2(qcircuit: QCircuit, simplify: bool = False) -> tuple[str, floa
                     qasm_measure += qasm
                 else:
                     qasm_str += qasm
+                print(phase)
                 gphase += phase
         else:
             qasm, phase = _instruction_to_qasm2(instruction)

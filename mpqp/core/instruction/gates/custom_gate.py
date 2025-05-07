@@ -154,7 +154,6 @@ class CustomGate(Gate):
                     or line.startswith("OPENQASM")
                 )
             ]
-
             return "\n".join(instructions_only), gphase
         else:
             raise NotImplementedError(f"Error: {language} is not supported")

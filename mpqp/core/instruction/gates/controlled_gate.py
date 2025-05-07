@@ -25,11 +25,15 @@ class ControlledGate(Gate, ABC):
 
     def __init__(
         self,
-        controls: list[int],
-        targets: list[int],
+        controls: list[int] | int,
+        targets: list[int] | int,
         non_controlled_gate: Gate,
         label: Optional[str] = None,
     ):
+        if isinstance(controls, int):
+            controls = [controls]
+        if isinstance(targets, int):
+            targets = [targets]
         if len(set(controls)) != len(controls):
             raise ValueError(f"Duplicate registers in controls: {controls}")
         if len(set(controls).intersection(set(targets))):

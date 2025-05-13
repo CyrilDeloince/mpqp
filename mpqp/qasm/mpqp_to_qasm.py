@@ -187,7 +187,6 @@ def mpqp_to_qasm2(qcircuit: QCircuit, simplify: bool = False) -> tuple[str, floa
                     qasm_measure += qasm
                 else:
                     qasm_str += qasm
-                print(phase)
                 gphase += phase
         else:
             qasm, phase = _instruction_to_qasm2(instruction)
@@ -196,7 +195,6 @@ def mpqp_to_qasm2(qcircuit: QCircuit, simplify: bool = False) -> tuple[str, floa
             else:
                 qasm_str += qasm
             gphase += phase
-
     if previous:
         qasm_str += _simplify_instruction_to_qasm(previous, targets, c_targets)
 

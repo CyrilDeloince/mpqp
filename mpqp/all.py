@@ -36,6 +36,7 @@ from .gates import (
     CRk,
     CRk_dagger,
     CustomGate,
+    CustomControlledGate,
     Gate,
     GateDefinition,
     H,
@@ -57,6 +58,7 @@ from .gates import (
     Y,
     Z,
 )
+
 from .measures import (
     Basis,
     BasisMeasure,

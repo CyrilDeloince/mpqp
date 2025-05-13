@@ -1,27 +1,50 @@
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import Any, Optional, Union
 from qiskit.circuit import Parameter
 
 from mpqp.core.instruction.gates.controlled_gate import ControlledGate
 from mpqp.core.instruction.gates.custom_gate import CustomGate
 from mpqp.core.instruction.gates.gate_definition import UnitaryMatrix
+from mpqp.core.instruction.gates.native_gates import CNOT, H, X, Y, Z, Id, Rx, Ry, Rz
 from mpqp.core.languages import Language
 from mpqp.tools.generics import Matrix
 
 from .gate import Gate
 
+ParametrizedGates = [Rz, Ry, Rx]
+OneQubitGates = [H, X, Y, Z, Id]
+
 
 class CustomControlledGate(ControlledGate):
     def __init__(
         self,
-        controls: list[int] | int,
-        targets: list[int] | int,
+        controls: list[int],
+        targets: list[int],
         gate: Union[type[Gate], Matrix],
+        rotation: Optional[float] = None,
         label: Optional[str] = None,
     ):
         from mpqp.tools.generics import SimpleClassReprABCMeta
 
         if isinstance(gate, SimpleClassReprABCMeta):
-            ControlledGate.__init__(self, controls, targets, gate(targets), label)
+            if gate in OneQubitGates:
+                if len(targets) != 1:
+                    raise ValueError(f"Multiple targets for one qubit gate : {targets}")
+                ControlledGate.__init__(
+                    self, controls, targets, gate(targets[0]), label
+                )
+            elif gate in ParametrizedGates:
+                assert rotation
+                if len(targets) != 1:
+                    raise ValueError(f"Multiple targets for one qubit gate : {targets}")
+                ControlledGate.__init__(
+                    self, controls, targets, gate(rotation, targets[0]), label
+                )
+            elif gate == CNOT:
+                if len(targets) != 1:
+                    raise ValueError(f"Multiple targets for one qubit gate : {targets}")
+                ControlledGate.__init__(self, controls, targets, X(targets[0]), label)
+            else:
+                ControlledGate.__init__(self, controls, targets, gate(targets), label)
         else:
             if isinstance(targets, int):
                 targets = [targets]

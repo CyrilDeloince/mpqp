@@ -64,8 +64,8 @@ class CustomControlledGate(ControlledGate):
 
     def __init__(
         self,
-        controls: list[int] | int,
-        targets: list[int] | int,
+        controls: Union[list[int], int],
+        targets: Union[list[int], int],
         gate: Union[type[Gate], Matrix],
         rotation: Optional[float] = None,
         label: Optional[str] = None,

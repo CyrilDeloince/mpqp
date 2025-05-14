@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC
 from functools import reduce
-from typing import Optional
+from typing import Optional, Union
 
 from typeguard import typechecked
 
@@ -25,8 +25,8 @@ class ControlledGate(Gate, ABC):
 
     def __init__(
         self,
-        controls: list[int] | int,
-        targets: list[int] | int,
+        controls: Union[list[int], int],
+        targets: Union[list[int], int],
         non_controlled_gate: Gate,
         label: Optional[str] = None,
     ):

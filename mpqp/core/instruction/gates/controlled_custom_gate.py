@@ -4,26 +4,9 @@ from qiskit.circuit import Parameter
 from mpqp.core.instruction.gates.controlled_gate import ControlledGate
 from mpqp.core.instruction.gates.custom_gate import CustomGate
 from mpqp.core.instruction.gates.gate_definition import UnitaryMatrix
-from mpqp.core.instruction.gates.native_gates import (
-    CNOT,
-    H,
-    SWAP,
-    TOF,
-    X,
-    Y,
-    Z,
-    Id,
-    Rx,
-    Ry,
-    Rz,
-)
+
+from mpqp.core.instruction.gates.native_gates import NativeGate
 from mpqp.core.languages import Language
-from mpqp.tools.generics import Matrix
-
-from .gate import Gate
-
-ParametrizedGates = [Rz, Ry, Rx]
-OneQubitGates = [H, X, Y, Z, Id]
 
 
 class CustomControlledGate(ControlledGate):
@@ -35,12 +18,11 @@ class CustomControlledGate(ControlledGate):
         controls: List of indices referring to the qubits used to control the gate.
         targets: List of indices referring to the qubits on which the gate will be applied.
         non_controlled_gate: The original, non controlled, gate or a matrix.
-        rotation: Used only if the non controlled gate is a parametrized gate to input its angle.
         label: Label used to identify the gate.
 
     Examples:
     >>> circuit = QCircuit(2)
-    >>> circuit.add(CustomControlledGate([0], [1], Y))
+    >>> circuit.add(CustomControlledGate([0], Y(1)))
     >>> pprint(circuit.to_matrix())
     [[1, 0, 0 , 0  ],
      [0, 1, 0 , 0  ],
@@ -52,7 +34,7 @@ class CustomControlledGate(ControlledGate):
     q_1: ┤ Y ├
          └───┘
     >>> circuit = QCircuit(3)
-    >>> circuit.add(CustomControlledGate([0,2], [1], np.array([[1,0],[0,-1]])))
+    >>> circuit.add(CustomControlledGate([0,2], CustomGate(np.array([[1,0],[0,-1]])),[1]))
     >>> print(circuit)  # doctest: +NORMALIZE_WHITESPACE
     q_0: ─────■─────
          ┌────┴────┐
@@ -65,72 +47,18 @@ class CustomControlledGate(ControlledGate):
     def __init__(
         self,
         controls: Union[list[int], int],
-        targets: Union[list[int], int],
-        gate: Union[type[Gate], Matrix],
-        rotation: Optional[float] = None,
+        gate: Union[NativeGate, CustomGate],
         label: Optional[str] = None,
     ):
-        from mpqp.tools.generics import SimpleClassReprABCMeta
-
-        if isinstance(controls, int):
-            controls = [controls]
-        if isinstance(gate, SimpleClassReprABCMeta):
-            if gate in OneQubitGates:
-                if isinstance(targets, int):
-                    ControlledGate.__init__(
-                        self, controls, targets, gate(targets), label
-                    )
-                else:
-                    if len(targets) != 1:
-                        raise ValueError(
-                            f"Multiple targets for one qubit gate : {targets}"
-                        )
-                    ControlledGate.__init__(
-                        self, controls, targets, gate(targets[0]), label
-                    )
-            elif gate in ParametrizedGates:
-                assert rotation
-                if isinstance(targets, int):
-                    ControlledGate.__init__(
-                        self, controls, targets, gate(rotation, targets), label
-                    )
-                else:
-                    if len(targets) != 1:
-                        raise ValueError(
-                            f"Multiple targets for one qubit gate : {targets}"
-                        )
-                    ControlledGate.__init__(
-                        self, controls, targets, gate(rotation, targets[0]), label
-                    )
-            elif gate == CNOT or gate == TOF:
-                if isinstance(targets, int):
-                    ControlledGate.__init__(self, controls, targets, X(targets), label)
-                else:
-                    if len(targets) != 1:
-                        raise ValueError(
-                            f"Multiple targets for one qubit gate : {targets}"
-                        )
-                    ControlledGate.__init__(
-                        self, controls, targets, X(targets[0]), label
-                    )
-            elif gate == SWAP:
-                if isinstance(targets, int) or len(targets) != 2:
-                    raise ValueError(
-                        f"Need exactly two targets for a SWAP gate got : {targets}"
-                    )
-                ControlledGate.__init__(
-                    self, controls, targets, SWAP(targets[0], targets[1]), label
-                )
-            else:
-                if isinstance(targets, int):
-                    targets = [targets]
-                ControlledGate.__init__(self, controls, targets, gate(targets), label)
-        else:
-            if isinstance(targets, int):
-                targets = [targets]
+        if isinstance(gate, ControlledGate):
+            if isinstance(controls, int):
+                controls = [controls]
+            controls += gate.controls
             ControlledGate.__init__(
-                self, controls, targets, CustomGate(UnitaryMatrix(gate), targets), label
+                self, controls, gate.targets, gate.non_controlled_gate, label
             )
+        else:
+            ControlledGate.__init__(self, controls, gate.targets, gate, label)
 
     def __repr__(self) -> str:
         from mpqp.tools.display import one_lined_repr

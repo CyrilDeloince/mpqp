@@ -168,7 +168,7 @@ class CustomControlledGate(ControlledGate):
     def to_other_language(
         self,
         language: Language = Language.QISKIT,
-        qiskit_parameters: set[Parameter] | None = None,
+        qiskit_parameters: Optional[set["Parameter"]] = None,
     ) -> Any:
         if language == Language.QISKIT:
             from qiskit.quantum_info import Operator

@@ -4,7 +4,7 @@ cases, you can use :class:`mpqp.core.instruction.gates.custom_gate.CustomGate`
 to add your custom unitary operation to the circuit, which will be decomposed
 and executed transparently."""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from typeguard import typechecked
 
@@ -50,11 +50,17 @@ class CustomGate(Gate):
     """
 
     def __init__(
-        self, definition: UnitaryMatrix, targets: list[int], label: Optional[str] = None
+        self,
+        definition: Union[UnitaryMatrix, Matrix],
+        targets: Union[list[int], int],
+        label: Optional[str] = None,
     ):
+        if not isinstance(definition, UnitaryMatrix):
+            definition = UnitaryMatrix(definition)
+        if isinstance(targets, int):
+            targets = [targets]
         self.definition = definition
         """See parameter description."""
-
         if definition.nb_qubits != len(targets):
             raise ValueError(
                 f"Size of the targets ({len(targets)}) must match the number of qubits of the "

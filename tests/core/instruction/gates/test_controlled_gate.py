@@ -1,13 +1,5 @@
-from typing import Optional, TYPE_CHECKING
-
 import numpy as np
 import pytest
-
-if TYPE_CHECKING:
-    from qiskit.circuit import Parameter
-
-from mpqp.core.instruction.gates.controlled_gate import ControlledGate
-from mpqp.core.languages import Language
 from mpqp.gates import *
 
 

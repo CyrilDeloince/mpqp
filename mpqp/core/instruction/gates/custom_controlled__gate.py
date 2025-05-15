@@ -64,26 +64,21 @@ class CustomControlledGate(ControlledGate):
         from mpqp.tools.display import one_lined_repr
         from mpqp.core.instruction.gates.parametrized_gate import ParametrizedGate
 
-        representation = ""
+        controls = self.controls if len(self.controls) > 1 else self.controls[0]
+        representation = "" if isinstance(controls, int) else "M"
+        targets = self.targets if len(self.targets) > 1 else self.targets[0]
+
         if isinstance(self.non_controlled_gate, CustomGate):
-            representation = f"CU({one_lined_repr(self.non_controlled_gate.matrix)}, "
+            representation += f"CU({one_lined_repr(self.non_controlled_gate.matrix)}, "
         else:
-            representation = f"C{type(self.non_controlled_gate)}("
+            representation += f"C{type(self.non_controlled_gate)}("
             if isinstance(self.non_controlled_gate, ParametrizedGate):
-                if len(self.non_controlled_gate.parameters) > 1:
+                if len(self.non_controlled_gate.parameters) != 1:
                     representation += f"{self.non_controlled_gate.parameters}, "
                 else:
                     representation += f"{self.non_controlled_gate.parameters[0]}, "
 
-        if len(self.controls) > 1:
-            representation = 'M' + representation + f"{self.controls}"
-        else:
-            representation = representation + f"{self.controls[0]}"
-
-        if len(self.targets) > 1:
-            return representation + f", {self.targets})"
-        else:
-            return representation + f", {self.targets[0]})"
+        return representation + f"{controls}, {targets})"
 
     def to_canonical_matrix(self):
         import numpy as np

@@ -1,7 +1,7 @@
 # pyright: reportUnusedImport=false
 from .controlled_gate import ControlledGate
 from .custom_gate import CustomGate, UnitaryMatrix
-from .controlled_custom_gate import CustomControlledGate
+from .custom_controlled__gate import CustomControlledGate
 from .gate import Gate
 from .gate_definition import GateDefinition
 from .native_gates import (

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from mpqp.core.instruction.gates.controlled_custom_gate import CustomControlledGate
+from mpqp.core.instruction.gates.custom_controlled__gate import CustomControlledGate
 from mpqp.gates import *
 
 

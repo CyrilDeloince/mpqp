@@ -46,7 +46,7 @@ from mpqp.core.instruction import Instruction
 from mpqp.core.instruction.barrier import Barrier
 from mpqp.core.instruction.breakpoint import Breakpoint
 from mpqp.core.instruction.gates import ControlledGate, CRk, Gate, Id
-from mpqp.core.instruction.gates.controlled_custom_gate import CustomControlledGate
+from mpqp.core.instruction.gates.custom_controlled__gate import CustomControlledGate
 from mpqp.core.instruction.gates.custom_gate import CustomGate
 from mpqp.core.instruction.gates.gate_definition import UnitaryMatrix
 from mpqp.core.instruction.gates.parametrized_gate import ParametrizedGate
@@ -1293,9 +1293,7 @@ class QCircuit:
             for instruction in self.instructions:
                 if isinstance(instruction, (ExpectationMeasure, Barrier, Breakpoint)):
                     continue
-                elif isinstance(instruction, CustomGate) or isinstance(
-                    instruction, CustomControlledGate
-                ):
+                elif isinstance(instruction, (CustomGate, CustomControlledGate)):
                     custom_circuit = QCircuit(self.nb_qubits)
                     custom_circuit.add(instruction)
                     qasm2_code = custom_circuit.to_other_language(

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from typeguard import typechecked
 
-from mpqp.core.instruction.gates.controlled_custom_gate import CustomControlledGate
+from mpqp.core.instruction.gates.custom_controlled__gate import CustomControlledGate
 
 if TYPE_CHECKING:
     from mpqp.core.circuit import QCircuit

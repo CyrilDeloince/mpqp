@@ -3,7 +3,6 @@ from qiskit.circuit import Parameter
 
 from mpqp.core.instruction.gates.controlled_gate import ControlledGate
 from mpqp.core.instruction.gates.custom_gate import CustomGate
-from mpqp.core.instruction.gates.gate_definition import UnitaryMatrix
 
 from mpqp.core.instruction.gates.native_gates import NativeGate
 from mpqp.core.languages import Language
@@ -61,24 +60,7 @@ class CustomControlledGate(ControlledGate):
             ControlledGate.__init__(self, controls, gate.targets, gate, label)
 
     def __repr__(self) -> str:
-        from mpqp.tools.display import one_lined_repr
-        from mpqp.core.instruction.gates.parametrized_gate import ParametrizedGate
-
-        controls = self.controls if len(self.controls) > 1 else self.controls[0]
-        representation = "" if isinstance(controls, int) else "M"
-        targets = self.targets if len(self.targets) > 1 else self.targets[0]
-
-        if isinstance(self.non_controlled_gate, CustomGate):
-            representation += f"CU({one_lined_repr(self.non_controlled_gate.matrix)}, "
-        else:
-            representation += f"C{type(self.non_controlled_gate)}("
-            if isinstance(self.non_controlled_gate, ParametrizedGate):
-                if len(self.non_controlled_gate.parameters) != 1:
-                    representation += f"{self.non_controlled_gate.parameters}, "
-                else:
-                    representation += f"{self.non_controlled_gate.parameters[0]}, "
-
-        return representation + f"{controls}, {targets})"
+        return f"CustomControlledGate({self.controls}, {self.non_controlled_gate.__repr__()})"
 
     def to_canonical_matrix(self):
         import numpy as np
@@ -111,7 +93,7 @@ class CustomControlledGate(ControlledGate):
             if isinstance(self.non_controlled_gate, CustomGate):
                 targets = self.targets + self.controls
                 targets.sort()
-                gate = CustomGate(UnitaryMatrix(self.to_matrix()), targets)
+                gate = CustomGate(self.to_matrix(), targets)
 
                 return gate.to_other_language(Language.QASM2)
 

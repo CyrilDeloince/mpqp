@@ -454,14 +454,6 @@ def run_aer(job: Job):
             if (job.job_type == JobType.STATE_VECTOR)
             else job.circuit.to_other_device(job.device)
         )
-        from mpqp.gates import CustomControlledGate
-
-        if any(isinstance(gate, CustomControlledGate) for gate in job.circuit.gates):
-            from qiskit import transpile
-
-            print("pog pog pog pog pog pog")
-            assert isinstance(qiskit_circuit, QuantumCircuit)
-            qiskit_circuit = transpile(qiskit_circuit, AerSimulator())
     else:
         qiskit_circuit = job.circuit.transpiled_circuit
 

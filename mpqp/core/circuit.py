@@ -46,7 +46,7 @@ from mpqp.core.instruction import Instruction
 from mpqp.core.instruction.barrier import Barrier
 from mpqp.core.instruction.breakpoint import Breakpoint
 from mpqp.core.instruction.gates import ControlledGate, CRk, Gate, Id
-from mpqp.core.instruction.gates.custom_controlled__gate import CustomControlledGate
+from mpqp.core.instruction.gates.custom_controlled_gate import CustomControlledGate
 from mpqp.core.instruction.gates.custom_gate import CustomGate
 from mpqp.core.instruction.gates.gate_definition import UnitaryMatrix
 from mpqp.core.instruction.gates.parametrized_gate import ParametrizedGate
@@ -1494,6 +1494,14 @@ class QCircuit:
                 backend = get_backend(device)
                 pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
                 qiskit_circuit = pm.run(qiskit_circuit)
+            if any(
+                isinstance(gate, CustomControlledGate) for gate in self.instructions
+            ):
+                from qiskit import transpile
+
+                if TYPE_CHECKING:
+                    assert isinstance(qiskit_circuit, QuantumCircuit)
+                qiskit_circuit = transpile(qiskit_circuit, backend_sim)
             return qiskit_circuit
         elif isinstance(device, GOOGLEDevice):
             from cirq.circuits.circuit import Circuit as CirqCircuit

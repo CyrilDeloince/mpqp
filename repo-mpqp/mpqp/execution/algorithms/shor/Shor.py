@@ -30,9 +30,7 @@ def shor_algorithm(N: int) -> tuple[int, int]:
         
         # Step 3: Compute the factors of N
         factors = maths.compute_factors(a, convergents, N)
-        if factors == None:
+        if factors == (None, None):
             continue
         else:
             return factors
-        
-print(shor_algorithm(15))

@@ -1,5 +1,7 @@
 import numpy as np
 
+from math import gcd
+
 # Fast exponantiation modulo m
 def fast_expo(a: int, n: int, m: int = None) -> int:
   if n == 0:
@@ -11,10 +13,18 @@ def fast_expo(a: int, n: int, m: int = None) -> int:
     return fast_expo(b, n // 2, m)
   return a * fast_expo(b, n // 2, m)
 
+# Euclide algorithm
+def euclide(a, b):
+  while b != 0:
+    tmp = b
+    b = a % b
+    a = tmp
+  return a
+
 # Choose a random integer 'a' which is a factor of 'N'
 def getFactor(N: int) -> int:
   a = np.random.randint(2, N)
-  while euclide(a, N) == 1:
+  while euclide(a, N) != 1:
     a = np.random.randint(2, N)
   return a
 

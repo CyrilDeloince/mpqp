@@ -1,8 +1,8 @@
 from mpqp import QCircuit, Barrier
 from mpqp.gates import H, X
 from mpqp.measures import BasisMeasure
-from mpqp.execution.algorithms.shor.modularExponentiationGate import CME
-from mpqp.execution.algorithms.shor.qft import QFT
+from mpqp.execution.algorithms.shor.quantum.modularExponentiationGate import CME
+from mpqp.execution.algorithms.shor.quantum.qft import QFT
 
 from math import floor, log
 

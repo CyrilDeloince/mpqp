@@ -25,14 +25,12 @@ def shor_algorithm(N: int) -> tuple[int, int]:
         a = maths.getFactor(N)
         
         # Step 2: Find the period 'r' using continued fractions
-        p, q = maths.continued_fraction(a, N)
+        r = maths.continued_fraction(a, N)
+        convergents = maths.convergents(r)
         
-        # Step 3: Verify whether a**r mod N = 1
-        if not maths.verify_period(a, p, N):
-            continue
-        # Step 4: Compute the factors of N
-        factors = maths.compute_factors(a, p, N)
-        if factors == (-1, -1):
+        # Step 3: Compute the factors of N
+        factors = maths.compute_factors(a, convergents, N)
+        if factors == None:
             continue
         else:
             return factors

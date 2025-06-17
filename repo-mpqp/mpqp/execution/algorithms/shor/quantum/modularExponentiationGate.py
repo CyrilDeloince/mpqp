@@ -1,7 +1,7 @@
 from typing import Union
 from mpqp.gates import CustomGate, UnitaryMatrix
 from mpqp.core.instruction.gates.custom_controlled_gate import CustomControlledGate
-from mpqp.tools import fast_expo
+from mpqp.execution.algorithms.shor.classic.utils.maths import fast_expo
 
 import numpy as np
 

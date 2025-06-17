@@ -457,14 +457,3 @@ def is_power_of_two(n: int) -> bool:
 
     """
     return n >= 1 and (n & (n - 1)) == 0
-
-# Fast exponantiation modulo m
-def fast_expo(a, n, m=None) -> int:
-  if n == 0:
-    return 1
-  b = (a*a)
-  if m != None:
-    b = b % m
-  if n % 2 == 0:
-    return fast_expo(b, n // 2, m)
-  return a * fast_expo(b, n // 2, m)

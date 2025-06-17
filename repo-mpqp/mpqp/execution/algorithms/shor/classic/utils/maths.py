@@ -35,3 +35,4 @@ def compute_factors(a, r, N):
   if r % 2 == 0 and fast_expo(a, r // 2, N) != -1 % N:
     p = fast_expo(a, r // 2)
     return euclide(p-1, N), euclide(p+1, N)
+  return -1, -1

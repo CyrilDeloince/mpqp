@@ -1,6 +1,12 @@
 import numpy as np
 
-from math import gcd
+from math import gcd, sqrt
+
+def isPrime(N: int) -> bool:
+    for i in range(2, int(sqrt(N)) + 1):
+        if N % i == 0:
+            return False
+    return True
 
 # Fast exponantiation modulo m
 def fast_expo(a: int, n: int, m: int = None) -> int:
@@ -87,8 +93,8 @@ def compute_factors(a, convergents, N):
             continue
 
         # 5) Extraire les deux gcd
-        p1 = math.gcd(x-1, N)
-        p2 = math.gcd(x+1, N)
+        p1 = gcd(x-1, N)
+        p2 = gcd(x+1, N)
 
         # 6) S’assurer d’avoir deux facteurs non triviaux
         if 1 < p1 < N and 1 < p2 < N:

@@ -4,6 +4,9 @@ from mpqp.measures import BasisMeasure
 from mpqp.execution.algorithms.shor.quantum.modularExponentiationGate import CME
 from mpqp.execution.algorithms.shor.quantum.qft import QFT
 
+from mpqp.core.languages import Language
+from typing import TYPE_CHECKING
+
 from math import floor, log
 
 class ShorCircuit(QCircuit):
@@ -29,6 +32,24 @@ class ShorCircuit(QCircuit):
         self.add(Barrier())
 
         #QFT not QFT inverse (see MAGNIEZ Lecture Notes)
-        self += QFT(range(2 * n)).inverse()
+        self += QFT(range(2 * n))
 
-        self.add(BasisMeasure(list(range(2 * n)), shots=10000))
+        self.add(BasisMeasure(list(range(2 * n)), shots=1))
+    
+    def __str__(self) -> str:
+        # n = self.nb_qubits // 3
+        # print(2**n)
+        # qiskit_circ = QCircuit(2 * n + n)
+        # qiskit_circ.add(X(2 * n))
+        # qiskit_circ.add(Barrier())
+
+        qiskit_circ = self.to_other_language(Language.QISKIT, printing=True)
+        if TYPE_CHECKING:
+            from qiskit import QuantumCircuit
+
+            assert isinstance(qiskit_circ, QuantumCircuit)
+        output = str(qiskit_circ.draw(output="text", fold=0))
+        if len(self.noises) != 0:
+            noises = "\n    ".join(str(noise) for noise in self.noises)
+            output += f"\nNoiseModel:\n    {noises}"
+        return output

@@ -19,7 +19,10 @@ def shor_algorithm(N: int) -> tuple[int, int]:
     # for small_prime in [2, 3, 5, 7]:
     #     if N % small_prime == 0:
     #         return small_prime, N // small_prime
-        
+    
+    if (maths.isPrime(N)):
+        return N, 1
+
     while True:
         # Step 1: Choose a random integer 'a' which is a factor of 'N'
         a = maths.getFactor(N)
@@ -39,6 +42,7 @@ def shor_algorithm(N: int) -> tuple[int, int]:
         
         # Step 3: Compute the factors of N
         factors = maths.compute_factors(a, convergents, N)
+        print("factors = ", factors)
         if factors == (None, None):
             continue
         else:
